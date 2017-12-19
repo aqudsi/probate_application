@@ -1,0 +1,10 @@
+.form-group {
+	border: 5px black;
+	margin:20px;
+	border-width:50px;
+	border-height:50px;
+	padding:20px;
+}
+button {
+	margin-top:10px;
+}
