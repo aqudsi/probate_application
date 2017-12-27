@@ -3,7 +3,9 @@ import DisplayResults from "../DisplayResults";
 import API from "../../utils/API";
 import "./SearchInput.css"
 
-
+/*
+This component takes in user input from a form, and queries the database for 
+*/
 
  class SearchInput extends Component {
  	constructor(props) {
@@ -18,7 +20,7 @@ import "./SearchInput.css"
  	 	caseNum: "",
  	 	SSN: "",
  	 	PIN: "",
- 	 	searchParams: [], //all search parameters stored in an array
+ 	 	searchParams: [], //all search parameters stored in an object
  	 	record: {}
  	 }
  	 this.inputFirstName = this.inputFirstName.bind(this);
@@ -74,11 +76,13 @@ import "./SearchInput.css"
 		this.setState({ searchParams: [] });
 		console.log(this.state.searchParams);
 	};
-
+//API call to the database
 	API_call = () => {
-		console.log("searchForRecord is running, search parameters are: " + this.state.searchParams)
+		console.log("searchForRecord is running");
 		API.searchRecord(this.state.searchParams)
-			.then(res=> this.setState({ record: res.data, searchParams: [] }))
+			.then(res=> 
+				this.setState({ record: res.data, searchParams: [] })
+				)
 			.catch(err => console.log(err));
 	};
 
@@ -86,32 +90,40 @@ import "./SearchInput.css"
 		console.log("Combining search parameters...");
 		const searchParams = this.state.searchParams;
 		if(this.state.firstName !== "") {
-			searchParams.push(this.state.firstName);
+			let firstName = { firstName: this.state.firstName };
+			searchParams.push(firstName);
 		}
-		if(this.state.lastName !== "") {	
-			searchParams.push(this.state.lastName);
+		if(this.state.lastName !== "") {
+			let lastName = { lastName: this.state.lastName };
+			searchParams.push(lastName);
 		}
 		if(this.state.IID !== "") {	
-			searchParams.push(this.state.IID);
+			let IID = { IID: this.state.IID };
+			searchParams.push(IID);
 		}
 		if(this.state.DOB !== "") {	
-			searchParams.push(this.state.DOB);
+			let DOB = { DOB: this.state.DOB };
+			searchParams.push(DOB);
 		}
 		if(this.state.DOD !== "") {
-			searchParams.push(this.state.DOD);
+			let DOD = { DOD: this.state.DOD };
+			searchParams.push(DOD);
 		}
 		if(this.state.Tribe !== "") {
-			searchParams.push(this.state.Tribe);
+			let Tribe = { Tribe: this.state.Tribe };
+			searchParams.push(Tribe);
 		}
 		if(this.state.caseNum !== "") {
-			searchParams.push(this.state.caseNum);
+			let caseNum = { caseNum: this.state.caseNum };
+			searchParams.push(caseNum);
 		}
-		if(this.state.SSN !== ""){
-			searchParams.push(this.state.SSN);	
+		if(this.state.SSN !== "") {
+			let SSN = { SSN: this.state.SSN };
+			searchParams.push(SSN);	
 		}
-		if(this.state.PIN !== ""){
-			searchParams.push(this.state.PIN);
-			console.log("Search parameters combined");	
+		if(this.state.PIN !== "") {
+			let PIN = { PIN: this.state.PIN };
+			searchParams.push(PIN);	
 		}
 	};
 
@@ -126,17 +138,17 @@ import "./SearchInput.css"
 	 	/>
 	 </div>
 	 <div className="col-md-4">
-	 	<form className="form-group">
+	  <form className="form-group">
 	   <div class="nav-link">New Search <i class="fa fa-search fa-lg" aria-hidden="true"></i></div>
-		<input type="text" className="form-control" placeholder="Enter Name" onBlur={this.inputFirstName}/>
-		<input type="text" className="form-control" placeholder="Enter Name" onBlur={this.inputLastName}/>
-		<input type="text" className="form-control" placeholder="Enter IID" onBlur={this.inputIID}/>
-		<input type="text" className="form-control" placeholder="Enter DOB" onBlur={this.inputDOB}/>
-		<input type="text" className="form-control" placeholder="Enter DOD" onBlur={this.inputDOD}/>
-		<input type="text" className="form-control" placeholder="Enter Tribe" onBlur={this.inputTribe} />
-		<input type="text" className="form-control" placeholder="Enter Case Number" onBlur={this.inputCaseNum}/>
-		<input type="text" className="form-control" placeholder="Enter SSN" onBlur={this.inputSSN}/>
-		<input type="text" className="form-control" placeholder="Enter PIN" onBlur={this.inputPIN}/>
+		<input type="text" className="form-control" placeholder="First Name" onBlur={this.inputFirstName}/>
+		<input type="text" className="form-control" placeholder="Last Name" onBlur={this.inputLastName}/>
+		<input type="text" className="form-control" placeholder="IID" onBlur={this.inputIID}/>
+		<input type="text" className="form-control" placeholder="DOB" onBlur={this.inputDOB}/>
+		<input type="text" className="form-control" placeholder="DOD" onBlur={this.inputDOD}/>
+		<input type="text" className="form-control" placeholder="Tribe" onBlur={this.inputTribe} />
+		<input type="text" className="form-control" placeholder="Case Number" onBlur={this.inputCaseNum}/>
+		<input type="text" className="form-control" placeholder="SSN" onBlur={this.inputSSN}/>
+		<input type="text" className="form-control" placeholder="PIN" onBlur={this.inputPIN}/>
 		<button type="submit" className="btn btn-outline-primary pull-right" onClick={this.searchForRecord} value="Submit">
 		Search <i class="fa fa-search" aria-hidden="true"></i></button>
 	   </form>

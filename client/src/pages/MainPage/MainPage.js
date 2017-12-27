@@ -8,8 +8,8 @@ import "./MainPage.css"
 	render() {
 		return (
 		  <div>
-		  		<Navigation />
-				<SearchInput />
+		  	<Navigation />
+			<SearchInput />
 		  </div>	
 		);
 	}

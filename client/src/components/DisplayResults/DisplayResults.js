@@ -33,10 +33,12 @@ else {
 render() {
   return (
 <div className="display">
+Search Results: {this.state.record.length}
  <table className="table">
   <thead>
     <tr>
-      <th scope="col">Name</th>
+      <th scope="col">First Name</th>
+      <th scope="col">Last Name</th>
       <th scope="col">Indian ID #</th>
       <th scope="col">Case #</th>
       <th scope="col">DOB</th>
@@ -49,11 +51,15 @@ render() {
   <tbody>
     {this.state.record.map(record => ( 
     <tr>
-      <td>{record.Name}</td>
+      <td>{record.firstName}</td>
+      <td>{record.lastName}</td>
       <td>{record.IID}</td>
       <td>{record.caseNum}</td>
       <td>{record.DOB}</td>
+      <td>{record.DOD}</td>
       <td>{record.Tribe}</td>
+      <td>{record.SSN}</td>
+      <td>{record.PIN}</td>
     </tr>
     ))}
   </tbody>

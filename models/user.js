@@ -2,11 +2,13 @@ module.exports = function(sequelize, DataTypes) {
 	var Users = sequelize.define("Users", {
 		IID: {
 			type: DataTypes.STRING,
-			PRIMARY_KEY: true,
+			defaultValue: false
 		},
-		Name: {
+		firstName: {
 			type: DataTypes.STRING,
-			allowNull: false,
+		},
+		lastName: {
+			type: DataTypes.STRING,
 		},
 		DOB: {
 			type: DataTypes.DATEONLY,

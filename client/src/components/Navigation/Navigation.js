@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import AddRecordModal from '../AddRecord';
 import "./Navigation.css"
 
 class Navigation extends Component {
@@ -24,9 +25,7 @@ render() {
           New <i class="fa fa-plus-circle fa-lg" aria-hidden="true"></i>
         </div>
         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-          <a class="dropdown-item">Action</a>
-          <a class="dropdown-item">Another action</a>
-          <a class="dropdown-item">Something else here</a>
+          <a class="dropdown-item" data-toggle="modal" data-target="#exampleModal">Add New Person</a>
         </div>
       </li>
         <li class="nav-item dropdown">
@@ -68,7 +67,9 @@ render() {
     </ul>
   </div>
 </nav>
-</div> 
+<AddRecordModal />
+</div>
+
   )
   }
 	}

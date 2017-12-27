@@ -3,12 +3,12 @@ import axios from "axios";
 export default {
 
 	//searchs for a record
-	searchRecord: function(param) { 
-		return axios.get("/api/search/" + param);
+	searchRecord: function(searchParams) { 
+		return axios.post("/api/search/", searchParams);
 	},
 	//adds a record
-	addRecord: function(caseInfo) {
-		return axios.post("/api/add");
+	addRecord: function(personInfo) {
+		return axios.post("/api/add/", personInfo);
 	},
 	//deletes a record 
 	deleteRecord: function(record) {
