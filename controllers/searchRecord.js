@@ -15,23 +15,29 @@ so the following code is my solution to this problem :)
 this obj is for storing the different values of whatever 
 combination of information the user chooses to enter into the search form
 */ 
+    // let searchParamsObj = {
+    // firstName: "",
+ 	 	// lastName: "",
+ 	 	// IID: "",
+ 	 	// Tribe: "",
+ 	 	// caseNum: "",
+ 	 	// SSN: "",
+ 	 	// PIN: "",
+    // }
     let searchParamsObj = {
-    firstName: "",
- 	 	lastName: "",
- 	 	IID: "",
- 	 	DOB: "",
- 	 	DOD: "",
- 	 	Tribe: "",
- 	 	caseNum: "",
- 	 	SSN: "",
- 	 	PIN: "",
+    firstName: {$like:"%"},
+    lastName: {$like:"%"},
+    IID: {$like:"%"},
+    Tribe: {$like:"%"},
+    caseNum: {$like:"%"},
+    SSN: {$like:"%"},
+    PIN: {$like:"%"},
     }
 //this algorithm creates an object with nested objects out of my array
 	var params = searchParams.reduce(function(acc, cur, i) {
   		acc[i] = cur;
   	return acc;
 	}, {});
-
 //this algorithm condenses each nested object into the parent object, leaving us with just one object with the correct properties and values
 	for (var key in params) {
     // skip loop if the property is from prototype
@@ -43,89 +49,98 @@ combination of information the user chooses to enter into the search form
         if(!obj.hasOwnProperty(prop)) continue;
 //these conditionals fill the object with the corresponding information provided by the user 
         if(prop == 'firstName') {
-        	searchParamsObj.firstName = obj[prop];
+        	searchParamsObj.firstName.$like = obj[prop] + '%';
         }
         else if(prop == 'lastName') {
-        	searchParamsObj.lastName = obj[prop];
+        	searchParamsObj.lastName.$like = obj[prop] + '%';
         }
         else if(prop == "IID") {
-        	searchParamsObj.IID = obj[prop];
-        }
-        else if(prop == "DOB") {
-        	searchParamsObj.DOB = obj[prop];
-        }
-        else if(prop == "DOD") {
-        	searchParamsObj.DOD = obj[prop];
+        	searchParamsObj.IID.$like = obj[prop] + '%';
         }
         else if(prop == "Tribe") {
-        	searchParamsObj.Tribe = obj[prop];
+        	searchParamsObj.Tribe.$like = obj[prop] + '%';
         }
         else if(prop == "caseNum") {
-        	searchParamsObj.caseNum = obj[prop];
+        	searchParamsObj.caseNum.$like = obj[prop] + '%';
         }
         else if(prop == "SSN") {
-        	searchParamsObj.SSN = obj[prop];
+        	searchParamsObj.SSN.$like = obj[prop] + '%';
         }
         else if(prop == "PIN") {
-        	searchParamsObj.PIN = obj[prop];
+        	searchParamsObj.PIN.$like = obj[prop] + '%';
         }
       
     }
 }
-//this next line removes all keys (properties) that are empty strings
-Object.keys(searchParamsObj).forEach((key) => (searchParamsObj[key] == "") && delete searchParamsObj[key]);
-//log it to make sure its exactly what we want
 
+const likeParamsObj = Object.assign({}, searchParamsObj);
+
+//this next line removes all keys (properties) that are empty strings
+Object.keys(searchParamsObj).forEach((key) => (searchParamsObj[key].$like == "%") && delete searchParamsObj[key]);
+//log it to make sure its exactly what we want
+console.log(searchParamsObj)
 
 /*
 I reference the object we just created in this Sequelize method 
 so that we can search for records based on multiple criteria
 */
-let firstName = searchParamsObj.firstName;
-let lastName = searchParamsObj.lastName;
+let firstName = likeParamsObj.firstName;
+let lastName = likeParamsObj.lastName;
+let IID = likeParamsObj.IID;
+let Tribe = likeParamsObj.Tribe;
+let caseNum = likeParamsObj.caseNum;
+let SSN = likeParamsObj.SSN;
+
 
 /*
 this next property i created strictly for the purpose of incorporating a LIKE operator, so that someone could type in 
 "Ed" for the first name and retrieve all names that start with Ed (Edward, Edison, Edwin, etc).
 I needed to have the entirety of my query parameters (searchParamsObj) in an object before i used
 */ 
-if(Object.keys(searchParamsObj).length > 1) {
+//this $and used to be $or
+for(prop in searchParamsObj) {
+  console.log(prop)
+}
     var likeParams = { 
         $or : [
           {
             firstName: {
-              $like: '%' + firstName + '%'
+              $like: firstName + '%'
             },
             lastName: {
-              $like: '%' + lastName + '%'
-            }
+              $like: lastName + '%'
+            },
+            IID: {
+              $like: IID + '%'
+            },
+            Tribe: {
+              $like: Tribe + '%'
+            },
+            caseNum: {
+              $like: caseNum + '%'
+            },
+            SSN: {
+              $like: SSN + '%'
+            },
          },
         ]
     }  
-}
-else if(Object.keys(searchParamsObj).length === 1) {
-    var likeParams = { 
-        $or : [
+
+    var otherLikeParams = {
+      $or : [
           {
-            firstName: {
-              $like: '%' + firstName + '%'
-            },
-          },
-          {  
             lastName: {
-              $like: '%' + lastName + '%'
-            }
-          },
+              $like: 'Qud%'
+            },
+         },
         ]
-    }  
-}
-  
-console.log(searchParamsObj);
+    }
+
 //this sequelize query will not execute if the object passed to it is empty
 if(Object.keys(searchParamsObj).length !== 0) {
 	db.Users.findAll({
       where: {
-      $or: [searchParamsObj, likeParams]
+       $and: searchParamsObj
     }
     }).then(function(record) {
       res.json(record); //send the results back to be displayed by the react component

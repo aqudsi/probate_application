@@ -2,7 +2,7 @@ module.exports = function(sequelize, DataTypes) {
 	var Users = sequelize.define("Users", {
 		IID: {
 			type: DataTypes.STRING,
-			defaultValue: false
+			UNIQUE: true
 		},
 		firstName: {
 			type: DataTypes.STRING,
@@ -24,6 +24,7 @@ module.exports = function(sequelize, DataTypes) {
 		},
 		SSN: {
 			type: DataTypes.STRING,
+			UNIQUE: true
 		},
 		PIN: {
 			type: DataTypes.INTEGER,

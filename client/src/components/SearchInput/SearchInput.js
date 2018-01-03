@@ -21,7 +21,9 @@ This component takes in user input from a form, and queries the database for
  	 	SSN: "",
  	 	PIN: "",
  	 	searchParams: [], //all search parameters stored in an object
- 	 	record: {}
+ 	 	addParams: [], //same as search params, except used to add a record if none is found
+ 	 	record: {},
+ 	 	recordFound: ""
  	 }
  	 this.inputFirstName = this.inputFirstName.bind(this);
  	 this.inputLastName = this.inputLastName.bind(this);
@@ -64,66 +66,87 @@ This component takes in user input from a form, and queries the database for
 		this.setState({PIN: event.target.value});
 	};
 
-
+//executes functions for this component
 	searchForRecord = event => {
 		event.preventDefault();
 		this.combineSearchParameters();
-		this.API_call();
-		this.emptySearchParams();
+		this.searchRecord();
+	};
+//resets our seearchParams and record
+	recordFound = () => {
+		console.log(this.state.record)
+		if(Object.keys(this.state.record).length === 0) {
+			this.setState({ recordFound: false });
+			console.log("recordFound set to false");
+		}
+		else {
+			this.setState({ recordFound: true, addParams: [] });
+			console.log("recordFound set to true");
+		}
+		this.setState({ searchParams: [], addParams: [], recordFound: "" });
+		console.log("searchParams was emptied");
 	};
 
-	emptySearchParams = () => {
-		this.setState({ searchParams: [] });
-		console.log(this.state.searchParams);
-	};
+
 //API call to the database
-	API_call = () => {
-		console.log("searchForRecord is running");
+	searchRecord = () => {
+		console.log("searchRecord is running");
 		API.searchRecord(this.state.searchParams)
 			.then(res=> 
-				this.setState({ record: res.data, searchParams: [] })
+				this.setState({ record: res.data})
 				)
+			.then(res => this.recordFound())
 			.catch(err => console.log(err));
 	};
 
 	combineSearchParameters = () => {
-		console.log("Combining search parameters...");
+
 		const searchParams = this.state.searchParams;
+		const addParams = this.state.addParams;
 		if(this.state.firstName !== "") {
 			let firstName = { firstName: this.state.firstName };
 			searchParams.push(firstName);
+			addParams.push(firstName);
 		}
 		if(this.state.lastName !== "") {
 			let lastName = { lastName: this.state.lastName };
 			searchParams.push(lastName);
+			addParams.push(lastName);
 		}
 		if(this.state.IID !== "") {	
 			let IID = { IID: this.state.IID };
 			searchParams.push(IID);
+			addParams.push(IID);
 		}
 		if(this.state.DOB !== "") {	
 			let DOB = { DOB: this.state.DOB };
 			searchParams.push(DOB);
+			addParams.push(DOB);
 		}
 		if(this.state.DOD !== "") {
 			let DOD = { DOD: this.state.DOD };
 			searchParams.push(DOD);
+			addParams.push(DOD);
 		}
 		if(this.state.Tribe !== "") {
 			let Tribe = { Tribe: this.state.Tribe };
 			searchParams.push(Tribe);
+			addParams.push(Tribe);
 		}
 		if(this.state.caseNum !== "") {
 			let caseNum = { caseNum: this.state.caseNum };
 			searchParams.push(caseNum);
+			addParams.push(caseNum);
 		}
 		if(this.state.SSN !== "") {
 			let SSN = { SSN: this.state.SSN };
-			searchParams.push(SSN);	
+			searchParams.push(SSN);
+			addParams.push(SSN);	
 		}
 		if(this.state.PIN !== "") {
 			let PIN = { PIN: this.state.PIN };
-			searchParams.push(PIN);	
+			searchParams.push(PIN);
+			addParams.push(PIN);	
 		}
 	};
 
@@ -135,6 +158,8 @@ This component takes in user input from a form, and queries the database for
 	 <div className="col-md-8">
 	 <DisplayResults 
 	 		record = {this.state.record}
+	 		params = {this.state.addParams}
+	 		recordFound = {this.state.recordFound}
 	 	/>
 	 </div>
 	 <div className="col-md-4">

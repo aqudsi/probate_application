@@ -3,6 +3,16 @@ import DisplayDuplicateData from '../DisplayDuplicateData';
 import API from "../../utils/API";
 import "./AddRecordModal.css";
 
+function validate(firstName, lastName) {
+  // true means invalid, so our conditions got reversed
+  console.log("Validating fields");
+  return {
+    firstName: firstName.length === 0,
+    lastName: lastName.length === 0
+  };
+}
+
+
 class AddRecordModal extends Component {
 constructor(props) {
   super(props)
@@ -18,8 +28,14 @@ constructor(props) {
       personParams: [], //all person info parameters stored in an object
       duplicateData: {},
       recordCreated: "",
-      DB_error: ""
+      DB_error: "",
+      touched: {
+        firstName: false,
+        lastName: false
+   
+      }
    }
+
    this.inputFirstName = this.inputFirstName.bind(this);
    this.inputLastName = this.inputLastName.bind(this);
    this.inputIID = this.inputIID.bind(this);
@@ -113,8 +129,21 @@ constructor(props) {
       personParams.push(SSN); 
     }
   };
+    fieldValidation = (field) => (event) => {
+    this.setState({ 
+    touched: { ...this.state.touched, [field]: true},
+    });
+   };
 
 render() {
+  const errors = validate(this.state.firstName, this.state.lastName);
+  const shouldMarkError = (field) => {
+      const hasError = errors[field];
+      const shouldShow = this.state.touched[field];
+
+      return hasError ? shouldShow : false;
+    };
+
   return (
 <div className="addRecord">
  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -128,12 +157,12 @@ render() {
       </div>
       <div class="modal-body">
        <form className="form-group">
-        <input type="text" className="form-control required" placeholder="First Name" onBlur={this.inputFirstName}/>
-        <input type="text" className="form-control" placeholder="Last Name" onBlur={this.inputLastName}/>
+        <input type="text" className={ shouldMarkError('firstName') ? "form-control required" : "form-control" } placeholder="First Name (required)" onChange={this.inputFirstName} onBlur={this.inputFirstName, this.fieldValidation('firstName')}/>
+        <input type="text" className={ shouldMarkError('lastName') ? "form-control required" : "form-control" } placeholder="Last Name (required)" onChange={this.inputLastName} onBlur={this.inputLastName, this.fieldValidation('lastName')}/>
         <input type="text" className="form-control" placeholder="IID" onBlur={this.inputIID}/>
-        <input type="text" className="form-control required" placeholder="DOB" onBlur={this.inputDOB}/>
+        <input type="text" className="form-control" placeholder="DOB" onBlur={this.inputDOB}/>
         <input type="text" className="form-control" placeholder="DOD" onBlur={this.inputDOD}/>
-        <input type="text" className="form-control required" placeholder="Tribe" onBlur={this.inputTribe} />
+        <input type="text" className="form-control" placeholder="Tribe" onBlur={this.inputTribe}/>
         <input type="text" className="form-control" placeholder="Case Number" onBlur={this.inputCaseNum}/>
         <input type="text" className="form-control" placeholder="SSN" onBlur={this.inputSSN}/>
         <input type="text" className="form-control" placeholder="PIN" onBlur={this.inputPIN}/>

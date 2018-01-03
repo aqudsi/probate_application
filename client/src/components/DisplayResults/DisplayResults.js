@@ -1,15 +1,24 @@
 import React, { Component } from "react";
+import API from "../../utils/API";
 import "./DisplayResults.css"
 
 class DisplayResults extends Component {
 constructor(props) {
   super(props)
   this.state = {
-    record: []
+    record: [],
+    recordFound: "", 
+    addParams: []
   }
-}
+};
+/*
+problem is that componentWillReceiveProps updates EVERY time it receives new props, so the
+confirm prompt is activated multiple times unneccessarily. put some logic in that makes it so 
+this.addRecord() isn't activated every time new props are receieved
+*/
 componentWillReceiveProps(props) {
-  /*the first time this component loads, props.record doesn't exist, so the if 
+  /*
+  the first time this component loads, props.record doesn't exist, so the conditional 
   statement verifies that the object in questions (props.record) has a length of 0 
   which means its empty, and that it's an object.
   After the call to the database to retrieve data has been made, this logic
@@ -20,15 +29,32 @@ componentWillReceiveProps(props) {
   TL;DR This logic makes sure that we have the data we want in props.record before setting
   it to the state
   */
-if(Object.keys(props.record).length === 0 && props.record.constructor === Object){
-  console.log("no data")
+
+if(Object.keys(this.props.record).length === 0) {
+  this.setState({ addParams: props.params, recordFound: props.recordFound });
+  if(this.state.recordFound === false && this.state.addParams.length !== 0) {
+    this.addRecord()
+  }
 }
 else {
-  console.log("received data");
-  console.log(props.record)
   this.setState({ record: props.record });
 }
 }
+//need to fix this so the alert only pops up if no record has been found, and get the addRecord function to work
+ addRecord = () => {
+  if(this.state.addParams.length !== 0) {
+      if(window.confirm('No matching record found, would you like to create a record?') === true && this.state.addParams.length !== 0) {
+        console.log("Adding record");
+        API.addRecord(this.state.addParams)
+        .then(res=> this.setState({ addParams: [], recordFound: "" }))
+        .then(res=> alert("Record has been successfully created!"));
+      } 
+      else {
+        this.setState({ addParams: [], recordFound: "" });
+        console.log("No record was created");
+      }
+  }    
+} 
 
 render() {
   return (
