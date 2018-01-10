@@ -73,74 +73,16 @@ combination of information the user chooses to enter into the search form
     }
 }
 
-const likeParamsObj = Object.assign({}, searchParamsObj);
-
-//this next line removes all keys (properties) that are empty strings
+//this next line removes all keys (properties) that are only % signs
 Object.keys(searchParamsObj).forEach((key) => (searchParamsObj[key].$like == "%") && delete searchParamsObj[key]);
 //log it to make sure its exactly what we want
 console.log(searchParamsObj)
-
-/*
-I reference the object we just created in this Sequelize method 
-so that we can search for records based on multiple criteria
-*/
-let firstName = likeParamsObj.firstName;
-let lastName = likeParamsObj.lastName;
-let IID = likeParamsObj.IID;
-let Tribe = likeParamsObj.Tribe;
-let caseNum = likeParamsObj.caseNum;
-let SSN = likeParamsObj.SSN;
-
-
-/*
-this next property i created strictly for the purpose of incorporating a LIKE operator, so that someone could type in 
-"Ed" for the first name and retrieve all names that start with Ed (Edward, Edison, Edwin, etc).
-I needed to have the entirety of my query parameters (searchParamsObj) in an object before i used
-*/ 
-//this $and used to be $or
-for(prop in searchParamsObj) {
-  console.log(prop)
-}
-    var likeParams = { 
-        $or : [
-          {
-            firstName: {
-              $like: firstName + '%'
-            },
-            lastName: {
-              $like: lastName + '%'
-            },
-            IID: {
-              $like: IID + '%'
-            },
-            Tribe: {
-              $like: Tribe + '%'
-            },
-            caseNum: {
-              $like: caseNum + '%'
-            },
-            SSN: {
-              $like: SSN + '%'
-            },
-         },
-        ]
-    }  
-
-    var otherLikeParams = {
-      $or : [
-          {
-            lastName: {
-              $like: 'Qud%'
-            },
-         },
-        ]
-    }
 
 //this sequelize query will not execute if the object passed to it is empty
 if(Object.keys(searchParamsObj).length !== 0) {
 	db.Users.findAll({
       where: {
-       $and: searchParamsObj
+       $and: searchParamsObj //this object contains a $like operator that checks the DB to see if any entries are similar to what the user entered
     }
     }).then(function(record) {
       res.json(record); //send the results back to be displayed by the react component

@@ -17,24 +17,25 @@ class AddRecordModal extends Component {
 constructor(props) {
   super(props)
   this.state = {
-      firstName: "",
-      lastName: "",
-      IID: "",
-      DOB: "",
-      DOD: "",
-      Tribe: "",
-      caseNum: "",
-      SSN: "",
-      personParams: [], //all person info parameters stored in an object
-      duplicateData: {},
-      recordCreated: "",
-      DB_error: "",
-      touched: {
-        firstName: false,
-        lastName: false
-   
+    firstName: "",
+    lastName: "",
+    IID: "",
+    DOB: "",
+    DOD: "",
+    Tribe: "",
+    caseNum: "",
+    SSN: "",
+    personParams: [], //all person info parameters stored in an object
+    duplicateData: {},
+    personDetails: {},
+    recordCreated: "",
+    DB_error: "",
+    touched: {
+      firstName: false,
+      lastName: false
       }
-   }
+   };
+
 
    this.inputFirstName = this.inputFirstName.bind(this);
    this.inputLastName = this.inputLastName.bind(this);
@@ -46,9 +47,27 @@ constructor(props) {
    this.inputSSN = this.inputSSN.bind(this);
 
    this.addRecord = this.addRecord.bind(this);
-}
+};
+  componentWillReceiveProps(props) {
+    if(Object.keys(props.personDetails).length !== 0) {
+      this.setState({ personDetails: props.personDetails });
+      this.changeNullValues(props.personDetails);
+    }
+  };
+
+  changeNullValues = (props) => {
+    let personDetails = props;
+      for(var key in personDetails) {
+        if(personDetails[key] ==  null) {
+          personDetails[key] = "";
+        }
+      } 
+      this.setState({personDetails: personDetails})
+      console.log(this.state.personDetails);
+  };
 
   inputFirstName = event => {
+    console.log("inputFirstName is running")
     this.setState({firstName: event.target.value});
   };
   inputLastName = event => {
@@ -87,7 +106,7 @@ constructor(props) {
   API_call = () => {
     console.log("addRecord is running");
     API.addRecord(this.state.personParams)
-        .then(res =>
+        .then(res=>
             this.setState({ duplicateData: res.data.record, recordCreated: res.data.recordCreated, personParams: [], DB_error: res.data.name })
           )
         console.log(this.state.recordCreated);
@@ -146,26 +165,26 @@ render() {
 
   return (
 <div className="addRecord">
- <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Add Record </h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+ <div className="modal fade" id="addRecord" tabindex="-1" role="dialog" aria-labelledby="addRecordLabel" aria-hidden="true">
+  <div className="modal-dialog modal-lg" role="document">
+    <div className="modal-content">
+      <div className="modal-header">
+        <h5 className="modal-title" id="addRecordLabel">Add/Update Person Record {this.state.personDetails.firstName} </h5>
+        <button type="button" className="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="modal-body">
+      <div className="modal-body">
        <form className="form-group">
-        <input type="text" className={ shouldMarkError('firstName') ? "form-control required" : "form-control" } placeholder="First Name (required)" onChange={this.inputFirstName} onBlur={this.inputFirstName, this.fieldValidation('firstName')}/>
-        <input type="text" className={ shouldMarkError('lastName') ? "form-control required" : "form-control" } placeholder="Last Name (required)" onChange={this.inputLastName} onBlur={this.inputLastName, this.fieldValidation('lastName')}/>
-        <input type="text" className="form-control" placeholder="IID" onBlur={this.inputIID}/>
-        <input type="text" className="form-control" placeholder="DOB" onBlur={this.inputDOB}/>
-        <input type="text" className="form-control" placeholder="DOD" onBlur={this.inputDOD}/>
-        <input type="text" className="form-control" placeholder="Tribe" onBlur={this.inputTribe}/>
-        <input type="text" className="form-control" placeholder="Case Number" onBlur={this.inputCaseNum}/>
-        <input type="text" className="form-control" placeholder="SSN" onBlur={this.inputSSN}/>
-        <input type="text" className="form-control" placeholder="PIN" onBlur={this.inputPIN}/>
+        <input type="text" className={ shouldMarkError('firstName') ? "form-control required" : "form-control" } value={this.state.firstName} placeholder="First Name (required)" onChange={this.inputFirstName} onBlur={this.inputFirstName, this.fieldValidation('firstName')}/>
+        <input type="text" className={ shouldMarkError('lastName') ? "form-control required" : "form-control" } value={this.state.lastName} placeholder="Last Name (required)" onChange={this.inputLastName} onBlur={this.inputLastName, this.fieldValidation('lastName')}/>
+        <input type="text" className="form-control" placeholder="IID" onChange={this.inputIID}/>
+        <input type="text" className="form-control" placeholder="DOB" value={this.state.DOB} onChange={this.inputDOB}/>
+        <input type="text" className="form-control" placeholder="DOD" value={this.state.inputDOD} onChange={this.inputDOD}/>
+        <input type="text" className="form-control" placeholder="Tribe" value={this.state.Tribe} onChange={this.inputTribe}/>
+        <input type="text" className="form-control" placeholder="Case Number" value={this.state.caseNum} onChange={this.inputCaseNum}/>
+        <input type="text" className="form-control" placeholder="SSN" value={this.state.SSN} onChange={this.inputSSN}/>
+        <input type="text" className="form-control" placeholder="PIN" value={this.state.PIN} onChange={this.inputPIN}/>
        </form>
        <DisplayDuplicateData 
         duplicateData = {this.state.duplicateData}
@@ -173,9 +192,9 @@ render() {
         DB_error = {this.state.DB_error}
        /> 
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary" onClick={this.addRecord}>Add Record</button>
+      <div className="modal-footer">
+        <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" className="btn btn-primary" onClick={this.addRecord}>Add Record</button>
       </div>
     </div>
   </div>

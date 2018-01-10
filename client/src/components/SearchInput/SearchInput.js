@@ -77,20 +77,20 @@ This component takes in user input from a form, and queries the database for
 		console.log(this.state.record)
 		if(Object.keys(this.state.record).length === 0) {
 			this.setState({ recordFound: false });
-			console.log("recordFound set to false");
+			// console.log("recordFound set to false");
 		}
 		else {
 			this.setState({ recordFound: true, addParams: [] });
-			console.log("recordFound set to true");
+			// console.log("recordFound set to true");
 		}
 		this.setState({ searchParams: [], addParams: [], recordFound: "" });
-		console.log("searchParams was emptied");
+			// console.log("searchParams was emptied");
 	};
 
 
 //API call to the database
 	searchRecord = () => {
-		console.log("searchRecord is running");
+		// console.log("searchRecord is running");
 		API.searchRecord(this.state.searchParams)
 			.then(res=> 
 				this.setState({ record: res.data})

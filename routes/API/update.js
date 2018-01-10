@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const updateRecord = require("../../controllers/updateRecord");
 
-// router.route("/update").put(updateRecord.update);
+router.route("/").put(updateRecord.updateRecord);
 
 module.exports = router;

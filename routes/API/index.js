@@ -7,6 +7,6 @@ const updateRoute = require("./update");
 router.use("/search", searchRoute);
 router.use("/add", addRoute);
 // router.use("/delete", deleteRoute);
-// router.use("/update", updateRoute);
+router.use("/update", updateRoute);
 
 module.exports = router;

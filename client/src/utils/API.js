@@ -16,7 +16,7 @@ export default {
 	},
 	//updates a record
 	updateRecord: function(record) {
-		return axios.put("/api/update");
+		return axios.put("/api/update", record);
 	}
 
 }

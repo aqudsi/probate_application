@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import UpdateRecordModal from "./UpdateRecordModal";
 import API from "../../utils/API";
 import "./DisplayResults.css"
 
@@ -8,9 +9,21 @@ constructor(props) {
   this.state = {
     record: [],
     recordFound: "", 
-    addParams: []
+    addParams: [],
+    personDetails: {
+      firstName: "",
+      lastName: "",
+      IID: "",
+      DOB: "",
+      DOD: "",
+      Tribe: "",
+      caseNum: "",
+      SSN: "",
+      PIN: "",
+    }
   }
 };
+
 /*
 problem is that componentWillReceiveProps updates EVERY time it receives new props, so the
 confirm prompt is activated multiple times unneccessarily. put some logic in that makes it so 
@@ -30,31 +43,47 @@ componentWillReceiveProps(props) {
   it to the state
   */
 
-if(Object.keys(this.props.record).length === 0) {
-  this.setState({ addParams: props.params, recordFound: props.recordFound });
-  if(this.state.recordFound === false && this.state.addParams.length !== 0) {
-    this.addRecord()
-  }
-}
-else {
-  this.setState({ record: props.record });
-}
-}
+    if(Object.keys(this.props.record).length === 0) {
+      this.setState({ addParams: props.params, recordFound: props.recordFound });
+      if(this.state.recordFound === false && this.state.addParams.length !== 0) {
+        this.addRecord()
+      }
+    }
+    else {
+      this.setState({ record: props.record });
+    }
+};
 //need to fix this so the alert only pops up if no record has been found, and get the addRecord function to work
  addRecord = () => {
-  if(this.state.addParams.length !== 0) {
-      if(window.confirm('No matching record found, would you like to create a record?') === true && this.state.addParams.length !== 0) {
-        console.log("Adding record");
-        API.addRecord(this.state.addParams)
-        .then(res=> this.setState({ addParams: [], recordFound: "" }))
-        .then(res=> alert("Record has been successfully created!"));
-      } 
-      else {
-        this.setState({ addParams: [], recordFound: "" });
-        console.log("No record was created");
-      }
-  }    
-} 
+    if(this.state.addParams.length !== 0) {
+        if(window.confirm('No matching record found, would you like to create a record?') === true && this.state.addParams.length !== 0) {
+          // console.log("Adding record");
+          API.addRecord(this.state.addParams)
+          .then(res=> this.setState({ addParams: [], recordFound: "" }))
+          .then(res=> alert("Record has been successfully created!"));
+        } 
+        else {
+          this.setState({ addParams: [], recordFound: "" });
+          // console.log("No record was created");
+          alert("No record was created");
+        }
+    }    
+  }; 
+//need to create a function that will take the information from the record selected on the DisplayRecord component, and autofill it into the appropriate input fields of AddRecordModal component
+  personDetails = (event) => {
+   let firstName = event.target.getAttribute('firstname');
+   let lastName = event.target.getAttribute('lastname');
+   let IID = event.target.getAttribute('iid');
+   let DOB = event.target.getAttribute('dob');
+   let DOD = event.target.getAttribute('dod');
+   let Tribe = event.target.getAttribute('tribe');
+   let caseNum = event.target.getAttribute('casenum');
+   let SSN = event.target.getAttribute('ssn');
+   let PIN = event.target.getAttribute('pin');
+   this.setState({ personDetails: 
+    { ...this.state.personDetails, firstName: firstName, lastName: lastName, IID: IID, DOB: DOB, DOD: DOD, Tribe: Tribe, caseNum: caseNum, SSN: SSN, PIN: PIN }
+  });
+};
 
 render() {
   return (
@@ -63,8 +92,7 @@ Search Results: {this.state.record.length}
  <table className="table">
   <thead>
     <tr>
-      <th scope="col">First Name</th>
-      <th scope="col">Last Name</th>
+      <th scope="col">Name</th>
       <th scope="col">Indian ID #</th>
       <th scope="col">Case #</th>
       <th scope="col">DOB</th>
@@ -77,8 +105,18 @@ Search Results: {this.state.record.length}
   <tbody>
     {this.state.record.map(record => ( 
     <tr>
-      <td>{record.firstName}</td>
-      <td>{record.lastName}</td>
+      <td><a data-toggle="modal" data-target="#updateRecord" 
+      firstname={record.firstName} 
+      lastname={record.lastName}
+      iid={record.IID}
+      dob={record.DOB}
+      dod={record.DOD}
+      tribe={record.Tribe}
+      casenum={record.caseNum}
+      ssn={record.SSN}
+      pin={record.PIN}
+      onClick={this.personDetails}>{record.lastName}, {record.firstName}
+      </a></td>
       <td>{record.IID}</td>
       <td>{record.caseNum}</td>
       <td>{record.DOB}</td>
@@ -90,6 +128,9 @@ Search Results: {this.state.record.length}
     ))}
   </tbody>
  </table>
+ <UpdateRecordModal 
+  personDetails={this.state.personDetails}
+ />
 </div> 
   )
   }
