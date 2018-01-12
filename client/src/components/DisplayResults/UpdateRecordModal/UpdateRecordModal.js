@@ -3,6 +3,7 @@ import DisplayDuplicateData from '../../DisplayDuplicateData';
 import API from "../../../utils/API";
 import "./UpdateRecordModal.css";
 
+//field validation function
 function validate(firstName, lastName) {
   // true means invalid, so our conditions got reversed
   console.log("Validating fields");
@@ -42,22 +43,23 @@ constructor(props) {
 
    this.inputFirstName = this.inputFirstName.bind(this);
    this.inputLastName = this.inputLastName.bind(this);
-   this.inputIID = this.inputIID.bind(this);
+   // this.inputIID = this.inputIID.bind(this);
    this.inputDOB = this.inputDOB.bind(this);
    this.inputDOD = this.inputDOD.bind(this);
    this.inputTribe = this.inputTribe.bind(this);
    this.inputCaseNum = this.inputCaseNum.bind(this);
-   this.inputSSN = this.inputSSN.bind(this);
+   // this.inputSSN = this.inputSSN.bind(this);
 
    this.updateRecord = this.updateRecord.bind(this);
 };
+//this function runs everytime it receives props, and as long as props.personDetails isn't empty, it sets the state object of personDetails to props.personDetails and it passes that object to the function changeNullValues
   componentWillReceiveProps(props) {
     if(Object.keys(props.personDetails).length !== 0) {
       this.setState({ personDetails: props.personDetails });
       this.changeNullValues(props.personDetails);
     }
   };
-
+//this function changes any null values of any property in the props.personDetails object into an empty string (so that there are no errors in updating a record)
   changeNullValues = (props) => {
     let personDetails = props;
       for(var key in personDetails) {
@@ -69,6 +71,7 @@ constructor(props) {
       console.log(this.state.personDetails);
   };
 
+//these next set of functions change the corresponding values of each property in personDetails to the user's input (for updating records)
   inputFirstName = event => {
     this.setState({personDetails:
       { ...this.state.personDetails, firstName: event.target.value}
@@ -79,11 +82,11 @@ constructor(props) {
        { ...this.state.personDetails, lastName: event.target.value}
     });
   };
-  inputIID = event => {
-     this.setState({personDetails:
-       { ...this.state.personDetails, IID: event.target.value}
-    });
-  };
+  // inputIID = event => {
+  //    this.setState({personDetails:
+  //      { ...this.state.personDetails, IID: event.target.value}
+  //   });
+  // };
   inputDOB = event => {
      this.setState({personDetails:
        { ...this.state.personDetails, DOB: event.target.value}
@@ -104,32 +107,32 @@ constructor(props) {
        { ...this.state.personDetails, caseNum: event.target.value}
     });
   };
-  inputSSN = event => {
-     this.setState({personDetails:
-       { ...this.state.personDetails, SSN: event.target.value}
-    });
+  // inputSSN = event => {
+  //    this.setState({personDetails:
+  //      { ...this.state.personDetails, SSN: event.target.value}
+  //   });
+  // };
+//if the database returns an error message (SequelizeDatabaseError) then it alerts the user that there was an issue updating the record. Otherwise it'll alert the user that the update was sucessful
+  errorHandler = () => {
+    if(this.state.DB_error.length === 0) {
+      alert("Successfully updated person information!");
+    }
+    else {
+      alert("There was a problem with updating the person information, please try again!");
+      this.setState({ DB_error: "" });
+    }
   };
 
-
+//this function takes the personDetails object and runs an API function to update the record. 
   updateRecord = event => {
     event.preventDefault();
-    this.API_call();
-    this.emptyPersonParams();
-  };
-
-  emptyPersonParams = () => {
-    // this.setState({ personDetails: {} });
-  };
-
-  API_call = () => {
     console.log("updateRecord is running");
     API.updateRecord(this.state.personDetails)
         .then(res=>
-            alert("Record has been successfully updated!")
-          )
-        .catch(err=> console.log(err));
+            console.log(res.data))// this.setState({ DB_error: res.data.name})
+        .then(res=> this.errorHandler())    
   };
-
+//this function highlights the fields that are required red, if they're left empty
     fieldValidation = (field) => (event) => {
     this.setState({ 
     touched: { ...this.state.touched, [field]: true},
@@ -137,6 +140,7 @@ constructor(props) {
    };
 
 render() {
+  //field validation function 
   const errors = validate(this.state.personDetails.firstName, this.state.personDetails.lastName);
   const shouldMarkError = (field) => {
       const hasError = errors[field];
@@ -160,19 +164,14 @@ render() {
        <form className="form-group">
         <input type="text" className={ shouldMarkError('firstName') ? "form-control required" : "form-control" } value={this.state.personDetails.firstName} placeholder="First Name (required)" onChange={this.inputFirstName} onBlur={this.inputFirstName, this.fieldValidation('firstName')}/>
         <input type="text" className={ shouldMarkError('lastName') ? "form-control required" : "form-control" } value={this.state.personDetails.lastName} placeholder="Last Name (required)" onChange={this.inputLastName} onBlur={this.inputLastName, this.fieldValidation('lastName')}/>
-        <input type="text" className="form-control" placeholder="IID" onChange={this.inputIID}/>
+        <input type="text" className="form-control" placeholder="IID" value={this.state.personDetails.IID} onChange={this.inputIID}/>
         <input type="text" className="form-control" placeholder="DOB" value={this.state.personDetails.DOB} onChange={this.inputDOB}/>
-        <input type="text" className="form-control" placeholder="DOD" value={this.state.personDetails.inputDOD} onChange={this.inputDOD}/>
+        <input type="text" className="form-control" placeholder="DOD" value={this.state.personDetails.DOD} onChange={this.inputDOD}/>
         <input type="text" className="form-control" placeholder="Tribe" value={this.state.personDetails.Tribe} onChange={this.inputTribe}/>
         <input type="text" className="form-control" placeholder="Case Number" value={this.state.personDetails.caseNum} onChange={this.inputCaseNum}/>
         <input type="text" className="form-control" placeholder="SSN" value={this.state.personDetails.SSN} onChange={this.inputSSN}/>
         <input type="text" className="form-control" placeholder="PIN" value={this.state.personDetails.PIN}/>
        </form>
-       <DisplayDuplicateData 
-        duplicateData = {this.state.duplicateData}
-        recordCreated = {this.state.recordCreated}
-        DB_error = {this.state.DB_error}
-       /> 
       </div>
       <div className="modal-footer">
         <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>

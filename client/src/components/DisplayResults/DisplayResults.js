@@ -24,23 +24,9 @@ constructor(props) {
   }
 };
 
-/*
-problem is that componentWillReceiveProps updates EVERY time it receives new props, so the
-confirm prompt is activated multiple times unneccessarily. put some logic in that makes it so 
-this.addRecord() isn't activated every time new props are receieved
-*/
 componentWillReceiveProps(props) {
   /*
-  the first time this component loads, props.record doesn't exist, so the conditional 
-  statement verifies that the object in questions (props.record) has a length of 0 
-  which means its empty, and that it's an object.
-  After the call to the database to retrieve data has been made, this logic
-  checks to make sure that props.record (which is an array sent back from the DB),
-  is still NOT an object and is empty, which are both false; so then the else statement
-  executes
-
-  TL;DR This logic makes sure that we have the data we want in props.record before setting
-  it to the state
+   this function runs everytime it receives new props from the SearchInput component. If props.record is empty, meaning no record was found, and recordFound = false and addParams is not empty, then it runs addRecord. This ensures that addRecord is only run if the user put in search parameters, and the database verifies that no record was found
   */
 
     if(Object.keys(this.props.record).length === 0) {
@@ -53,7 +39,7 @@ componentWillReceiveProps(props) {
       this.setState({ record: props.record });
     }
 };
-//need to fix this so the alert only pops up if no record has been found, and get the addRecord function to work
+//this function promps the user that no record was found, and asks them if they want to create a new record. If they user selects yes, then a record is created using addParams, which is for the person the user was searching for initially. It then alerts the user that a record was sucessfully created. If the user declines to make a new record, then it alerts the user that no record was created.  
  addRecord = () => {
     if(this.state.addParams.length !== 0) {
         if(window.confirm('No matching record found, would you like to create a record?') === true && this.state.addParams.length !== 0) {
@@ -64,12 +50,11 @@ componentWillReceiveProps(props) {
         } 
         else {
           this.setState({ addParams: [], recordFound: "" });
-          // console.log("No record was created");
           alert("No record was created");
         }
     }    
   }; 
-//need to create a function that will take the information from the record selected on the DisplayRecord component, and autofill it into the appropriate input fields of AddRecordModal component
+//This function takes the information from the record selected on the DisplayRecord component, and autofills it into the appropriate input fields of UpdateRecordComponent component
   personDetails = (event) => {
    let firstName = event.target.getAttribute('firstname');
    let lastName = event.target.getAttribute('lastname');

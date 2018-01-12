@@ -15,15 +15,6 @@ so the following code is my solution to this problem :)
 this obj is for storing the different values of whatever 
 combination of information the user chooses to enter into the search form
 */ 
-    // let searchParamsObj = {
-    // firstName: "",
- 	 	// lastName: "",
- 	 	// IID: "",
- 	 	// Tribe: "",
- 	 	// caseNum: "",
- 	 	// SSN: "",
- 	 	// PIN: "",
-    // }
     let searchParamsObj = {
     firstName: {$like:"%"},
     lastName: {$like:"%"},
@@ -73,7 +64,7 @@ combination of information the user chooses to enter into the search form
     }
 }
 
-//this next line removes all keys (properties) that are only % signs
+//this next line removes all key (property) values that are only % signs
 Object.keys(searchParamsObj).forEach((key) => (searchParamsObj[key].$like == "%") && delete searchParamsObj[key]);
 //log it to make sure its exactly what we want
 console.log(searchParamsObj)
@@ -86,7 +77,7 @@ if(Object.keys(searchParamsObj).length !== 0) {
     }
     }).then(function(record) {
       res.json(record); //send the results back to be displayed by the react component
-    });
+    })
   } 
  }	
 }

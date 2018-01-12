@@ -38,6 +38,7 @@ This component takes in user input from a form, and queries the database for
  	 this.searchForRecord = this.searchForRecord.bind(this);	
  	}
 
+//these next functions set the user's input to the corresponding state values 
 	inputFirstName = event => {
 		this.setState({firstName: event.target.value});
 	};
@@ -66,22 +67,22 @@ This component takes in user input from a form, and queries the database for
 		this.setState({PIN: event.target.value});
 	};
 
-//executes functions for this component
+//executes functions in the order we need them to be executed for this component
 	searchForRecord = event => {
 		event.preventDefault();
 		this.combineSearchParameters();
 		this.searchRecord();
 	};
-//resets our seearchParams and record
+//resets our searchParams and record, also sets recordFound to true or false depending on if anything is found in the db
 	recordFound = () => {
 		console.log(this.state.record)
 		if(Object.keys(this.state.record).length === 0) {
 			this.setState({ recordFound: false });
-			// console.log("recordFound set to false");
+			console.log("recordFound set to false");
 		}
 		else {
 			this.setState({ recordFound: true, addParams: [] });
-			// console.log("recordFound set to true");
+			console.log("recordFound set to true");
 		}
 		this.setState({ searchParams: [], addParams: [], recordFound: "" });
 			// console.log("searchParams was emptied");
@@ -99,6 +100,7 @@ This component takes in user input from a form, and queries the database for
 			.catch(err => console.log(err));
 	};
 
+//combines are search params in to an array of objects, only pushes to the array what fields the user actually filled
 	combineSearchParameters = () => {
 
 		const searchParams = this.state.searchParams;
