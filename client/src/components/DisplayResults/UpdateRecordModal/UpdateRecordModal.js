@@ -119,7 +119,7 @@ constructor(props) {
     }
     else {
       alert("There was a problem with updating the person information, please try again!");
-      this.setState({ DB_error: "" });
+      // this.setState({ DB_error: "" });
     }
   };
 
@@ -129,7 +129,7 @@ constructor(props) {
     console.log("updateRecord is running");
     API.updateRecord(this.state.personDetails)
         .then(res=>
-            console.log(res.data))// this.setState({ DB_error: res.data.name})
+          console.log(res.data.name))// this.setState({ DB_error: res.data.name}))
         .then(res=> this.errorHandler())    
   };
 //this function highlights the fields that are required red, if they're left empty
@@ -162,15 +162,15 @@ render() {
       </div>
       <div className="modal-body">
        <form className="form-group">
-        <input type="text" className={ shouldMarkError('firstName') ? "form-control required" : "form-control" } value={this.state.personDetails.firstName} placeholder="First Name (required)" onChange={this.inputFirstName} onBlur={this.inputFirstName, this.fieldValidation('firstName')}/>
-        <input type="text" className={ shouldMarkError('lastName') ? "form-control required" : "form-control" } value={this.state.personDetails.lastName} placeholder="Last Name (required)" onChange={this.inputLastName} onBlur={this.inputLastName, this.fieldValidation('lastName')}/>
-        <input type="text" className="form-control" placeholder="IID" value={this.state.personDetails.IID} onChange={this.inputIID}/>
-        <input type="text" className="form-control" placeholder="DOB" value={this.state.personDetails.DOB} onChange={this.inputDOB}/>
-        <input type="text" className="form-control" placeholder="DOD" value={this.state.personDetails.DOD} onChange={this.inputDOD}/>
-        <input type="text" className="form-control" placeholder="Tribe" value={this.state.personDetails.Tribe} onChange={this.inputTribe}/>
-        <input type="text" className="form-control" placeholder="Case Number" value={this.state.personDetails.caseNum} onChange={this.inputCaseNum}/>
-        <input type="text" className="form-control" placeholder="SSN" value={this.state.personDetails.SSN} onChange={this.inputSSN}/>
-        <input type="text" className="form-control" placeholder="PIN" value={this.state.personDetails.PIN}/>
+        First Name <input type="text" className={ shouldMarkError('firstName') ? "form-control required" : "form-control" } value={this.state.personDetails.firstName} placeholder="First Name (required)" onChange={this.inputFirstName} onBlur={this.inputFirstName, this.fieldValidation('firstName')}/>
+        Last Name <input type="text" className={ shouldMarkError('lastName') ? "form-control required" : "form-control" } value={this.state.personDetails.lastName} placeholder="Last Name (required)" onChange={this.inputLastName} onBlur={this.inputLastName, this.fieldValidation('lastName')}/>
+        IID <input type="text" className="form-control" placeholder="IID" value={this.state.personDetails.IID} onChange={this.inputIID}/>
+        DOB <input type="text" className="form-control" placeholder="DOB" value={this.state.personDetails.DOB} onChange={this.inputDOB}/>
+        DOD <input type="text" className="form-control" placeholder="DOD" value={this.state.personDetails.DOD} onChange={this.inputDOD}/>
+        Tribe <input type="text" className="form-control" placeholder="Tribe" value={this.state.personDetails.Tribe} onChange={this.inputTribe}/>
+        Case #<input type="text" className="form-control" placeholder="Case Number" value={this.state.personDetails.caseNum} onChange={this.inputCaseNum}/>
+        SSN <input type="text" className="form-control" placeholder="SSN" value={this.state.personDetails.SSN} onChange={this.inputSSN}/>
+        PIN <input type="text" className="form-control" placeholder="PIN" value={this.state.personDetails.PIN}/>
        </form>
       </div>
       <div className="modal-footer">

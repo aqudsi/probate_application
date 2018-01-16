@@ -95,7 +95,7 @@ console.log(addParamsObj);
 
 //this sequelize query will not execute if the object passed to it is empty
 if(Object.keys(addParamsObj).length !== 0) {
-  db.Users.findOrCreate({where: addParamsObj})
+  db.persondata.findOrCreate({where: addParamsObj})
   .spread((user, created) => {
       console.log(user.dataValues);
       console.log(created);

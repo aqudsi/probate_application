@@ -8,9 +8,9 @@ a {
 }
 
 a:hover {
-	color: black;
 	text-decoration: underline;
+	color: black;
 	opacity: .7;
-	font-style: italic;
+	font-weight: bold;
 	
 }

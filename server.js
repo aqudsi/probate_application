@@ -1,5 +1,8 @@
 const express = require("express");
 const bodyParser = require("body-parser");
+const passport = require('passport');
+// const LocalStrategy = require('passport-local').Strategy;
+const session = require('express-session');
 const routes = require("./routes");
 const PORT = process.env.PORT || 3001;
 const app = express();
@@ -9,11 +12,15 @@ var db = require("./models");
 
 // Serve up static assets
 app.use(express.static("client/build"));
-app.use(express.static("/routes"))
+app.use(express.static("/routes"));
 
 // Configure body parser for AJAX requests
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+
+app.use(session({ secret: 'password', resave: true, saveUninitialized: true }));
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Add routes, both API and view
 app.use(routes);

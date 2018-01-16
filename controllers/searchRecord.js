@@ -71,7 +71,7 @@ console.log(searchParamsObj)
 
 //this sequelize query will not execute if the object passed to it is empty
 if(Object.keys(searchParamsObj).length !== 0) {
-	db.Users.findAll({
+	db.persondata.findAll({
       where: {
        $and: searchParamsObj //this object contains a $like operator that checks the DB to see if any entries are similar to what the user entered
     }

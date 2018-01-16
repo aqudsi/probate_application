@@ -14,7 +14,7 @@ module.exports = {
 		//log our record to make sure its what we want
 		// console.log(record);
 		//update function which passes in the record 
-		db.Users.update(
+		db.persondata.update(
 			record, 
 			{
 				where: {
