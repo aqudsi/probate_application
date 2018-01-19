@@ -17,6 +17,10 @@ export default {
 	//updates a record
 	updateRecord: function(record) {
 		return axios.put("/api/update", record);
+	},
+
+	login: function(credentials) {
+		return axios.post("api/login", credentials)
 	}
 
 }

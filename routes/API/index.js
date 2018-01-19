@@ -9,6 +9,6 @@ router.use("/search", searchRoute);
 router.use("/add", addRoute);
 // router.use("/delete", deleteRoute);
 router.use("/update", updateRoute);
-// router.use("/auth", authRoute);
+router.use("/auth", authRoute);
 
 module.exports = router;

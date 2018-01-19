@@ -19,5 +19,9 @@ module.exports = function(sequelize, DataTypes) {
 		},
 	});
 
+// generateHash = function(password) {
+//     return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
+// };
+
 	return users;
 }
